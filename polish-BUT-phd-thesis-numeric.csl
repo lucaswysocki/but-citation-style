@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0"
+       demote-non-dropping-particle="sort-only" default-locale="pl-PL">
+  <info>
+    <title>Bialystok University of Technology – citation style (numeric, alphabetical)</title>
+    <title-short>BUT numeric</title-short>
+    <id>http://www.zotero.org/styles/bialystok-university-of-technology-numeric</id>
+    <link href="http://www.zotero.org/styles/bialystok-university-of-technology-numeric" rel="self"/>
+    <link href="http://www.zotero.org/styles/din-1505-2-numeric-alphabetical" rel="template"/>
+    <author>
+      <name>Custom – Bialystok University of Technology, based on DIN 1505-2 by Sven Rothe</name>
+    </author>
+    <category citation-format="numeric"/>
+    <category field="generic-base"/>
+    <summary>
+      Styl bibliograficzny dla rozpraw doktorskich według wymagań PB.
+      Cytowania numeryczne w nawiasach kwadratowych [N], bibliografia posortowana
+      alfabetycznie. Obsługiwane typy: książka, rozdział, artykuł, strona www,
+      akt prawny, praca dyplomowa.
+
+      Wskazówki dla aktów prawnych (typ „Legislation" / „Statute"):
+        – Pole Title: pełna nazwa aktu, np. „Ustawa z dnia 21 sierpnia 1997 r.
+          o gospodarce nieruchomościami"
+        – Pole Note: informacja o Dz.U. BEZ końcowego kropki, np.
+          „Dz.U. z 2004 r. nr 261, poz. 2603 z późn. zm"
+          (styl sam doda końcową kropkę).
+
+      Wskazówki dla rozdziałów jednoautorskich (Chapter bez pola Editor):
+        – Gdy pole Editor jest puste, styl wstawia automatycznie „idem".
+        – Jeśli autor rozdziału różni się od autora książki, wypełnij pole Editor.
+    </summary>
+    <updated>2026-03-07T00:00:00+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
+  </info>
+
+  <!-- ============================================================
+       LOCALE – polskie terminy
+       ============================================================ -->
+  <locale xml:lang="pl">
+    <terms>
+      <term name="editor" form="short">
+        <single>red.</single>
+        <multiple>red.</multiple>
+      </term>
+      <term name="in">w</term>
+      <term name="volume" form="short">t.</term>
+      <term name="accessed">dostęp</term>
+      <term name="anonymous">aut. nieznany</term>
+      <term name="no date" form="short">b.d.</term>
+      <term name="et-al">i in.</term>
+    </terms>
+  </locale>
+
+  <!-- ============================================================
+       MAKRA
+       ============================================================ -->
+
+  <!-- Autorzy w formacie: Nazwisko I.I., Nazwisko I.I. -->
+  <macro name="author">
+    <names variable="author" delimiter=", ">
+      <name name-as-sort-order="all"
+            sort-separator=" "
+            initialize-with="."
+            delimiter=", "
+            delimiter-precedes-last="always"
+            et-al-min="9"
+            et-al-use-first="8"/>
+      <et-al term="et-al"/>
+    </names>
+  </macro>
+
+  <!-- Klucz sortowania: autorzy, potem tytuł -->
+  <macro name="author-sort">
+    <names variable="author">
+      <name name-as-sort-order="all"
+            sort-separator=" "
+            initialize-with="."
+            delimiter=", "
+            delimiter-precedes-last="always"/>
+      <substitute>
+        <names variable="editor"/>
+        <text variable="title"/>
+      </substitute>
+    </names>
+  </macro>
+
+  <!-- Redaktorzy w formacie: red. I.I. Nazwisko, I.I. Nazwisko -->
+  <macro name="editor-list">
+    <names variable="editor">
+      <label form="short" suffix=" "/>
+      <name initialize-with="."
+            delimiter=", "
+            delimiter-precedes-last="always"
+            et-al-min="9"
+            et-al-use-first="8"/>
+      <et-al term="et-al"/>
+    </names>
+  </macro>
+
+  <!-- Rok wydania -->
+  <macro name="year-issued">
+    <date variable="issued" date-parts="year" form="numeric"/>
+  </macro>
+
+  <!-- URL i data dostępu: URL [dostęp: D.MM.RRRR] -->
+  <macro name="access">
+    <group>
+      <text variable="URL"/>
+      <group prefix=" [dostęp: " suffix="]">
+        <date variable="accessed">
+          <date-part name="day"   form="numeric"              suffix="."/>
+          <date-part name="month" form="numeric-leading-zeros" suffix="."/>
+          <date-part name="year"/>
+        </date>
+      </group>
+    </group>
+  </macro>
+
+  <!-- ============================================================
+       CYTOWANIE W TEKŚCIE: [N] lub [N, M]
+       ============================================================ -->
+  <citation collapse="citation-number">
+    <sort>
+      <key variable="citation-number"/>
+    </sort>
+    <layout prefix="[" suffix="]" delimiter=", ">
+      <text variable="citation-number"/>
+    </layout>
+  </citation>
+
+  <!-- ============================================================
+       BIBLIOGRAFIA – posortowana alfabetycznie, numerowana
+       ============================================================ -->
+  <bibliography hanging-indent="true"
+                et-al-min="9"
+                et-al-use-first="8"
+                entry-spacing="0"
+                second-field-align="flush">
+    <sort>
+      <key macro="author-sort"/>
+      <key variable="issued"/>
+      <key variable="title"/>
+    </sort>
+    <layout suffix=".">
+
+      <!-- Numer pozycji -->
+      <text variable="citation-number" prefix="[" suffix="]"/>
+
+      <choose>
+
+        <!-- ======================================================
+             KSIĄŻKA
+             Format: Nazwisko I., *Tytuł*, t. N, Wydawnictwo, Miasto, Rok.
+             ====================================================== -->
+        <if type="book" match="any">
+          <group prefix=" " delimiter=", ">
+            <text macro="author"/>
+            <text variable="title" font-style="italic"/>
+            <text variable="volume" prefix="t. "/>
+            <text variable="publisher"/>
+            <text variable="publisher-place"/>
+            <text macro="year-issued"/>
+          </group>
+        </if>
+
+        <!-- ======================================================
+             ROZDZIAŁ W PRACY ZBIOROWEJ lub JEDNOAUTOROWEJ
+             Z redaktorem:
+               Nazwisko I., *Tytuł rozdziału*, [w:] *Tytuł książki*,
+               red. I. Nazwisko, Wydawnictwo, Miasto, Rok, strony.
+             Bez redaktora (ta sama osoba):
+               Nazwisko I., *Tytuł rozdziału*, [w:] idem,
+               *Tytuł książki*, Wydawnictwo, Miasto, Rok, strony.
+             ====================================================== -->
+        <else-if type="chapter paper-conference" match="any">
+          <group prefix=" ">
+            <group delimiter=", ">
+              <text macro="author"/>
+              <text variable="title" font-style="italic"/>
+            </group>
+            <text value=" [w:] "/>
+            <choose>
+              <if variable="editor">
+                <!-- praca zbiorowa – są redaktorzy -->
+                <group delimiter=", ">
+                  <text variable="container-title" font-style="italic"/>
+                  <text macro="editor-list"/>
+                  <text variable="publisher"/>
+                  <text variable="publisher-place"/>
+                  <text macro="year-issued"/>
+                  <text variable="page"/>
+                </group>
+              </if>
+              <else>
+                <!-- praca jednoautorowa – brak redaktorów → idem -->
+                <group delimiter=", ">
+                  <text value="idem"/>
+                  <text variable="container-title" font-style="italic"/>
+                  <text variable="publisher"/>
+                  <text variable="publisher-place"/>
+                  <text macro="year-issued"/>
+                  <text variable="page"/>
+                </group>
+              </else>
+            </choose>
+          </group>
+        </else-if>
+
+        <!-- ======================================================
+             ARTYKUŁ W CZASOPIŚMIE (również z URL – publikacja internetowa)
+             Format: Nazwisko I., *Tytuł artykułu*, Czasopismo,
+                     Rok, Tom(Nr), strony[, URL [dostęp: data]].
+             ====================================================== -->
+        <else-if type="article-journal article-magazine article-newspaper" match="any">
+          <group prefix=" " delimiter=", ">
+            <text macro="author"/>
+            <text variable="title" font-style="italic"/>
+            <text variable="container-title"/>
+            <text macro="year-issued"/>
+            <group>
+              <text variable="volume"/>
+              <text variable="issue" prefix="(" suffix=")"/>
+            </group>
+            <text variable="page"/>
+          </group>
+          <choose>
+            <if variable="URL">
+              <text prefix=", " macro="access"/>
+            </if>
+          </choose>
+        </else-if>
+
+        <!-- ======================================================
+             STRONA WWW / POST
+             Format: Nazwisko I., *Tytuł*, Rok, URL [dostęp: data].
+             ====================================================== -->
+        <else-if type="webpage post post-weblog" match="any">
+          <group prefix=" " delimiter=", ">
+            <text macro="author"/>
+            <text variable="title" font-style="italic"/>
+            <text macro="year-issued"/>
+          </group>
+          <text prefix=", " macro="access"/>
+        </else-if>
+
+        <!-- ======================================================
+             AKT PRAWNY (Legislation / Bill / Statute)
+             Format: Pełna nazwa aktu, Dz.U. ...
+             Pole Note: „Dz.U. z 2004 r. nr 261, poz. 2603 z późn. zm"
+             (bez końcowej kropki – styl doda ją automatycznie).
+             ====================================================== -->
+        <else-if type="legislation bill" match="any">
+          <group prefix=" " delimiter=", ">
+            <text variable="title"/>
+            <text variable="note"/>
+          </group>
+        </else-if>
+
+        <!-- ======================================================
+             PRACA DYPLOMOWA / DYSERTACJA
+             Format: Nazwisko I., *Tytuł*, rodzaj, Uczelnia, Miasto, Rok.
+             ====================================================== -->
+        <else-if type="thesis" match="any">
+          <group prefix=" " delimiter=", ">
+            <text macro="author"/>
+            <text variable="title" font-style="italic"/>
+            <text variable="genre"/>
+            <text variable="publisher"/>
+            <text variable="publisher-place"/>
+            <text macro="year-issued"/>
+          </group>
+        </else-if>
+
+        <!-- ======================================================
+             RAPORT / NORMA (typ Report)
+             Format: Autor/Numer normy, *Tytuł*, Wydawca, Miejsce, Rok.
+             ====================================================== -->
+        <else-if type="report" match="any">
+          <group prefix=" " delimiter=", ">
+            <text macro="author"/>
+            <text variable="title" font-style="italic"/>
+            <text variable="number" prefix="Nr "/>
+            <text variable="publisher"/>
+            <text variable="publisher-place"/>
+            <text macro="year-issued"/>
+          </group>
+        </else-if>
+
+        <!-- ======================================================
+             DOMYŚLNY (pozostałe typy)
+             ====================================================== -->
+        <else>
+          <group prefix=" " delimiter=", ">
+            <text macro="author"/>
+            <text variable="title" font-style="italic"/>
+            <text variable="publisher"/>
+            <text variable="publisher-place"/>
+            <text macro="year-issued"/>
+          </group>
+        </else>
+
+      </choose>
+    </layout>
+  </bibliography>
+</style>
