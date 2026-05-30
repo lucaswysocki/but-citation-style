@@ -119,7 +119,7 @@
   <!-- ============================================================
        CYTOWANIE W TEKŚCIE: [N] lub [N, M]
        ============================================================ -->
-  <citation collapse="citation-number">
+  <citation>
     <sort>
       <key variable="citation-number"/>
     </sort>
